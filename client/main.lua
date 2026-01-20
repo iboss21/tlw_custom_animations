@@ -211,7 +211,7 @@ local function GetSortedPunishmentKeys()
 end
 
 -- Function to show decline punishment selection menu
-function ShowDeclinePunishmentMenu(fromPlayer)
+function ShowDeclinePunishmentMenu()
     if not pendingRequest then
         Notify({text = Locale("no_request"), type = "error"})
         return
@@ -444,15 +444,15 @@ RegisterCommandWithAliases(Config.Commands.declineRequest, function(source, args
     
     -- If no argument provided, show menu
     if #args < 1 then
-        ShowDeclinePunishmentMenu(pendingRequest.from)
+        ShowDeclinePunishmentMenu()
         return
     end
     
     -- Get punishment selection
     local selection = tonumber(args[1])
     
-    if selection == nil then
-        ShowDeclinePunishmentMenu(pendingRequest.from)
+    if not selection then
+        ShowDeclinePunishmentMenu()
         return
     end
     
@@ -470,7 +470,7 @@ RegisterCommandWithAliases(Config.Commands.declineRequest, function(source, args
         DeclineWithPunishment(selectedPunishment)
     else
         Notify({text = Locale("invalid_selection"), type = "error"})
-        ShowDeclinePunishmentMenu(pendingRequest.from)
+        ShowDeclinePunishmentMenu()
     end
 end)
 

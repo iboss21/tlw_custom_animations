@@ -168,8 +168,16 @@ RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId, selecte
         -- Notify both players
         Notify({text = Locale("taught_lesson"), type = "success", source = source})
         Notify({text = Locale("got_punished"), type = "error", source = fromPlayerId})
-    elseif selectedPunishment == nil and Config.DeclineWithPunishment and math.random(100) <= Config.PunishmentChance then
-        -- Legacy behavior: Random punishment if nil and config allows it
+        return
+    end
+    
+    -- Check if random punishment should be applied (legacy behavior)
+    local shouldApplyRandomPunishment = selectedPunishment == nil 
+        and Config.DeclineWithPunishment 
+        and math.random(100) <= Config.PunishmentChance
+    
+    if shouldApplyRandomPunishment then
+        -- Select random punishment animation
         local punishments = {}
         for key, _ in pairs(Config.DeclineAnimations) do
             table.insert(punishments, key)
@@ -185,16 +193,13 @@ RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId, selecte
             -- Notify both players
             Notify({text = Locale("taught_lesson"), type = "success", source = source})
             Notify({text = Locale("got_punished"), type = "error", source = fromPlayerId})
-        else
-            -- No punishment, just notify
-            TriggerClientEvent('tlw_animations:requestDeclined', fromPlayerId)
-            Notify({text = Locale("request_declined"), type = "info", source = fromPlayerId})
+            return
         end
-    else
-        -- No punishment, just notify
-        TriggerClientEvent('tlw_animations:requestDeclined', fromPlayerId)
-        Notify({text = Locale("request_declined"), type = "info", source = fromPlayerId})
     end
+    
+    -- No punishment, just notify
+    TriggerClientEvent('tlw_animations:requestDeclined', fromPlayerId)
+    Notify({text = Locale("request_declined"), type = "info", source = fromPlayerId})
 end)
 
 -- Event: Player stops animation
