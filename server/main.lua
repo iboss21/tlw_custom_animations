@@ -148,7 +148,7 @@ RegisterNetEvent('tlw_animations:acceptRequest', function(fromPlayerId, animatio
 end)
 
 -- Event: Target player declines the animation request
-RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId)
+RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId, selectedPunishment)
     local source = source
     
     -- Validate request exists
@@ -159,9 +159,17 @@ RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId)
     -- Clear pending request
     pendingRequests[source] = nil
     
-    -- Check if punishment should be applied
-    if Config.DeclineWithPunishment and math.random(100) <= Config.PunishmentChance then
-        -- Select random punishment animation
+    -- Check if player selected a punishment
+    if selectedPunishment and Config.DeclineAnimations[selectedPunishment] then
+        -- Apply selected punishment
+        TriggerClientEvent('tlw_animations:startPunishment', source, selectedPunishment, fromPlayerId)
+        TriggerClientEvent('tlw_animations:receivePunishment', fromPlayerId, selectedPunishment, source)
+        
+        -- Notify both players
+        Notify({text = Locale("taught_lesson"), type = "success", source = source})
+        Notify({text = Locale("got_punished"), type = "error", source = fromPlayerId})
+    elseif selectedPunishment == nil and Config.DeclineWithPunishment and math.random(100) <= Config.PunishmentChance then
+        -- Legacy behavior: Random punishment if nil and config allows it
         local punishments = {}
         for key, _ in pairs(Config.DeclineAnimations) do
             table.insert(punishments, key)

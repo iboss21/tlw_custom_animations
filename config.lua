@@ -1715,6 +1715,8 @@ Config.Locale = {
         -- Menu Options
         ["select_animation"] = "Select Animation",
         ["close_menu"] = "Close Menu",
+        ["select_punishment"] = "Select Decline Punishment",
+        ["decline_no_punishment"] = "Decline Without Punishment",
         
         -- Punishment Messages
         ["got_punished"] = "💥 You got what you deserved!",

@@ -200,6 +200,49 @@ function ShowAnimationList(options, targetPlayer)
     end
 end
 
+-- Function to show decline punishment selection menu
+function ShowDeclinePunishmentMenu(fromPlayer)
+    if not pendingRequest then
+        Notify({text = Locale("no_request"), type = "error"})
+        return
+    end
+    
+    print("========================================")
+    print("   " .. Locale("select_punishment"))
+    print("========================================")
+    print("0. " .. Locale("decline_no_punishment"))
+    
+    local punishmentOptions = {}
+    local index = 1
+    
+    for key, data in pairs(Config.DeclineAnimations) do
+        punishmentOptions[index] = key
+        print(index .. ". " .. data.label)
+        index = index + 1
+    end
+    
+    print("========================================")
+    print("Usage: /tlwdecline [number]")
+    print("Example: /tlwdecline 1  (for first punishment)")
+    print("         /tlwdecline 0  (decline without punishment)")
+    print("========================================")
+end
+
+-- Function to decline with selected punishment
+function DeclineWithPunishment(punishmentKey)
+    if not pendingRequest then
+        Notify({text = Locale("no_request"), type = "error"})
+        return
+    end
+    
+    local fromPlayer = pendingRequest.from
+    
+    TriggerServerEvent('tlw_animations:declineRequest', fromPlayer, punishmentKey)
+    pendingRequest = nil
+    
+    Notify({text = Locale("request_declined"), type = "info"})
+end
+
 -- Function to request animation from another player
 function RequestAnimation(targetPlayerId, animationKey)
     if isInAnimation then
@@ -384,14 +427,49 @@ RegisterCommandWithAliases(Config.Commands.acceptRequest, function()
 end)
 
 -- Command: Decline animation request
-RegisterCommandWithAliases(Config.Commands.declineRequest, function()
+RegisterCommandWithAliases(Config.Commands.declineRequest, function(source, args)
     if not pendingRequest then
         Notify({text = Locale("no_request"), type = "error"})
         return
     end
     
-    TriggerServerEvent('tlw_animations:declineRequest', pendingRequest.from)
-    pendingRequest = nil
+    -- If no argument provided, show menu
+    if #args < 1 then
+        ShowDeclinePunishmentMenu(pendingRequest.from)
+        return
+    end
+    
+    -- Get punishment selection
+    local selection = tonumber(args[1])
+    
+    if selection == nil then
+        ShowDeclinePunishmentMenu(pendingRequest.from)
+        return
+    end
+    
+    -- Selection 0 means no punishment
+    if selection == 0 then
+        DeclineWithPunishment(nil)
+        return
+    end
+    
+    -- Get punishment key from index
+    local punishmentKeys = {}
+    for key, _ in pairs(Config.DeclineAnimations) do
+        table.insert(punishmentKeys, key)
+    end
+    
+    -- Sort for consistent ordering
+    table.sort(punishmentKeys)
+    
+    local selectedPunishment = punishmentKeys[selection]
+    
+    if selectedPunishment then
+        DeclineWithPunishment(selectedPunishment)
+    else
+        Notify({text = "❌ Invalid punishment selection", type = "error"})
+        ShowDeclinePunishmentMenu(pendingRequest.from)
+    end
 end)
 
 -- Command: Stop current animation
