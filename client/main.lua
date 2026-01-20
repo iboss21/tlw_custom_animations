@@ -455,6 +455,7 @@ RegisterCommandWithAliases(Config.Commands.declineRequest, function(source, args
     local selection = tonumber(args[1])
     
     if not selection then
+        Notify({text = Locale("invalid_selection"), type = "error"})
         ShowDeclinePunishmentMenu()
         return
     end
