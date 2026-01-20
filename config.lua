@@ -1717,6 +1717,9 @@ Config.Locale = {
         ["close_menu"] = "Close Menu",
         ["select_punishment"] = "Select Decline Punishment",
         ["decline_no_punishment"] = "Decline Without Punishment",
+        ["invalid_selection"] = "❌ Invalid punishment selection",
+        ["usage_decline"] = "Usage: /tlwdecline [number]",
+        ["example_decline"] = "Example: /tlwdecline 1  (for first punishment)\n         /tlwdecline 0  (decline without punishment)",
         
         -- Punishment Messages
         ["got_punished"] = "💥 You got what you deserved!",

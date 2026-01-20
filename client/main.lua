@@ -232,9 +232,8 @@ function ShowDeclinePunishmentMenu(fromPlayer)
     end
     
     print("========================================")
-    print("Usage: /tlwdecline [number]")
-    print("Example: /tlwdecline 1  (for first punishment)")
-    print("         /tlwdecline 0  (decline without punishment)")
+    print(Locale("usage_decline"))
+    print(Locale("example_decline"))
     print("========================================")
 end
 
@@ -470,7 +469,7 @@ RegisterCommandWithAliases(Config.Commands.declineRequest, function(source, args
     if selectedPunishment then
         DeclineWithPunishment(selectedPunishment)
     else
-        Notify({text = "❌ Invalid punishment selection", type = "error"})
+        Notify({text = Locale("invalid_selection"), type = "error"})
         ShowDeclinePunishmentMenu(pendingRequest.from)
     end
 end)
