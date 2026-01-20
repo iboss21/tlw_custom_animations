@@ -200,6 +200,16 @@ function ShowAnimationList(options, targetPlayer)
     end
 end
 
+-- Helper function to get sorted punishment keys
+local function GetSortedPunishmentKeys()
+    local punishmentKeys = {}
+    for key, _ in pairs(Config.DeclineAnimations) do
+        table.insert(punishmentKeys, key)
+    end
+    table.sort(punishmentKeys)
+    return punishmentKeys
+end
+
 -- Function to show decline punishment selection menu
 function ShowDeclinePunishmentMenu(fromPlayer)
     if not pendingRequest then
@@ -212,12 +222,8 @@ function ShowDeclinePunishmentMenu(fromPlayer)
     print("========================================")
     print("0. " .. Locale("decline_no_punishment"))
     
-    -- Sort punishment keys for consistent ordering
-    local punishmentKeys = {}
-    for key, _ in pairs(Config.DeclineAnimations) do
-        table.insert(punishmentKeys, key)
-    end
-    table.sort(punishmentKeys)
+    -- Get sorted punishment keys
+    local punishmentKeys = GetSortedPunishmentKeys()
     
     -- Display sorted list
     for index, key in ipairs(punishmentKeys) do
@@ -457,15 +463,8 @@ RegisterCommandWithAliases(Config.Commands.declineRequest, function(source, args
         return
     end
     
-    -- Get punishment key from index
-    local punishmentKeys = {}
-    for key, _ in pairs(Config.DeclineAnimations) do
-        table.insert(punishmentKeys, key)
-    end
-    
-    -- Sort for consistent ordering
-    table.sort(punishmentKeys)
-    
+    -- Get sorted punishment keys (use same helper function)
+    local punishmentKeys = GetSortedPunishmentKeys()
     local selectedPunishment = punishmentKeys[selection]
     
     if selectedPunishment then
