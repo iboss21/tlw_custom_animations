@@ -212,13 +212,17 @@ function ShowDeclinePunishmentMenu(fromPlayer)
     print("========================================")
     print("0. " .. Locale("decline_no_punishment"))
     
-    local punishmentOptions = {}
-    local index = 1
+    -- Sort punishment keys for consistent ordering
+    local punishmentKeys = {}
+    for key, _ in pairs(Config.DeclineAnimations) do
+        table.insert(punishmentKeys, key)
+    end
+    table.sort(punishmentKeys)
     
-    for key, data in pairs(Config.DeclineAnimations) do
-        punishmentOptions[index] = key
+    -- Display sorted list
+    for index, key in ipairs(punishmentKeys) do
+        local data = Config.DeclineAnimations[key]
         print(index .. ". " .. data.label)
-        index = index + 1
     end
     
     print("========================================")
