@@ -393,6 +393,50 @@ RegisterNetEvent('tlw_animations:requestDeclined', function()
     Notify({text = Locale("request_declined"), type = "error"})
 end)
 
+-- Event to start punishment animation (attacker/decliner)
+RegisterNetEvent('tlw_animations:startPunishment', function(punishmentKey, victimServerId)
+    local punishData = Config.DeclineAnimations[punishmentKey]
+    if not punishData then return end
+    
+    UpdatePlayerPed()
+    local attackerData = punishData.attacker
+    
+    -- Load animation dictionary
+    if LoadAnimDict(attackerData.dict) then
+        -- Play attacker animation
+        TaskPlayAnim(playerPed, attackerData.dict, attackerData.anim, 8.0, -8.0, attackerData.duration or 2000, attackerData.flag or 0, 0, false, false, false)
+        
+        -- Auto-stop after duration
+        SetTimeout(attackerData.duration or 2000, function()
+            if DoesEntityExist(playerPed) then
+                ClearPedTasks(playerPed)
+            end
+        end)
+    end
+end)
+
+-- Event to receive punishment (victim/requester)
+RegisterNetEvent('tlw_animations:receivePunishment', function(punishmentKey, attackerServerId)
+    local punishData = Config.DeclineAnimations[punishmentKey]
+    if not punishData then return end
+    
+    UpdatePlayerPed()
+    local victimData = punishData.victim
+    
+    -- Load animation dictionary
+    if LoadAnimDict(victimData.dict) then
+        -- Play victim reaction animation
+        TaskPlayAnim(playerPed, victimData.dict, victimData.anim, 8.0, -8.0, victimData.duration or 2500, victimData.flag or 1, 0, false, false, false)
+        
+        -- Auto-stop after duration
+        SetTimeout(victimData.duration or 2500, function()
+            if DoesEntityExist(playerPed) then
+                ClearPedTasks(playerPed)
+            end
+        end)
+    end
+end)
+
 -- Event when partner stops animation
 RegisterNetEvent('tlw_animations:partnerStopped', function()
     if isInAnimation then
