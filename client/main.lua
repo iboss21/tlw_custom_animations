@@ -196,8 +196,63 @@ function ShowAnimationList(options, targetPlayer)
     -- For now, we'll create a command-based selection
     print("Available animations:")
     for i, option in ipairs(options) do
-        print(i .. ". " .. option.label .. " (/playanim " .. option.value .. ")")
+        print(i .. ". " .. option.label .. " (/" .. Config.Commands.playAnimation.name .. " " .. option.value .. ")")
     end
+end
+
+-- Helper function to get sorted punishment keys (cached for performance)
+local sortedPunishmentKeys = nil
+local function GetSortedPunishmentKeys()
+    if not sortedPunishmentKeys then
+        sortedPunishmentKeys = {}
+        for key, _ in pairs(Config.DeclineAnimations) do
+            table.insert(sortedPunishmentKeys, key)
+        end
+        table.sort(sortedPunishmentKeys)
+    end
+    return sortedPunishmentKeys
+end
+
+-- Function to show decline punishment selection menu
+function ShowDeclinePunishmentMenu()
+    if not pendingRequest then
+        Notify({text = Locale("no_request"), type = "error"})
+        return
+    end
+    
+    print("========================================")
+    print("   " .. Locale("select_punishment"))
+    print("========================================")
+    print("0. " .. Locale("decline_no_punishment"))
+    
+    -- Get sorted punishment keys
+    local punishmentKeys = GetSortedPunishmentKeys()
+    
+    -- Display sorted list
+    for index, key in ipairs(punishmentKeys) do
+        local data = Config.DeclineAnimations[key]
+        print(index .. ". " .. data.label)
+    end
+    
+    print("========================================")
+    print(Locale("usage_decline"))
+    print(Locale("example_decline"))
+    print("========================================")
+end
+
+-- Function to decline with selected punishment
+function DeclineWithPunishment(punishmentKey)
+    if not pendingRequest then
+        Notify({text = Locale("no_request"), type = "error"})
+        return
+    end
+    
+    local fromPlayer = pendingRequest.from
+    
+    TriggerServerEvent('tlw_animations:declineRequest', fromPlayer, punishmentKey)
+    pendingRequest = nil
+    
+    Notify({text = Locale("request_declined"), type = "info"})
 end
 
 -- Function to request animation from another player
@@ -384,14 +439,43 @@ RegisterCommandWithAliases(Config.Commands.acceptRequest, function()
 end)
 
 -- Command: Decline animation request
-RegisterCommandWithAliases(Config.Commands.declineRequest, function()
+RegisterCommandWithAliases(Config.Commands.declineRequest, function(source, args)
     if not pendingRequest then
         Notify({text = Locale("no_request"), type = "error"})
         return
     end
     
-    TriggerServerEvent('tlw_animations:declineRequest', pendingRequest.from)
-    pendingRequest = nil
+    -- If no argument provided, show menu
+    if #args < 1 then
+        ShowDeclinePunishmentMenu()
+        return
+    end
+    
+    -- Get punishment selection
+    local selection = tonumber(args[1])
+    
+    if not selection then
+        Notify({text = Locale("invalid_selection"), type = "error"})
+        ShowDeclinePunishmentMenu()
+        return
+    end
+    
+    -- Selection 0 means no punishment
+    if selection == 0 then
+        DeclineWithPunishment(nil)
+        return
+    end
+    
+    -- Get sorted punishment keys (use same helper function)
+    local punishmentKeys = GetSortedPunishmentKeys()
+    local selectedPunishment = punishmentKeys[selection]
+    
+    if selectedPunishment then
+        DeclineWithPunishment(selectedPunishment)
+    else
+        Notify({text = Locale("invalid_selection"), type = "error"})
+        ShowDeclinePunishmentMenu()
+    end
 end)
 
 -- Command: Stop current animation

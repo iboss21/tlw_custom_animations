@@ -21,11 +21,12 @@ TLW Custom Animations is a player-to-player interactive animation system that al
 
 | Command | What It Does |
 |---------|--------------|
-| `/anim` | Opens animation menu |
-| `/playanim [key]` | Request specific animation |
-| `/acceptanim` | Accept a pending request |
-| `/declineanim` | Decline a request (may trigger punishment) |
-| `/stopanim` | Stop your current animation |
+| `/tlwanim` or `/tlw` | Opens animation menu |
+| `/tlwplay [key]` | Request specific animation |
+| `/tlwaccept` or `/acceptanim` | Accept a pending request |
+| `/tlwdecline` or `/declineanim` | Shows punishment menu to decline |
+| `/tlwdecline [number]` | Decline with chosen punishment (0 = no punishment) |
+| `/tlwstop` or `/stopanim` | Stop your current animation |
 
 ---
 
@@ -40,13 +41,13 @@ TLW Custom Animations is a player-to-player interactive animation system that al
 
 **Option A: Use the menu**
 ```
-/anim
+/tlwanim
 ```
 Browse available animations and select one.
 
 **Option B: Use direct command**
 ```
-/playanim cowgirl
+/tlwplay cowgirl
 ```
 Replace "cowgirl" with any animation key.
 
@@ -56,7 +57,8 @@ The other player will see a notification:
 
 ```
 🐺 You received an animation request from [Name]
-Type /acceptanim to accept or /declineanim to decline
+Type /tlwaccept or /acceptanim to accept
+Type /tlwdecline or /declineanim to decline
 ```
 
 They have 30 seconds to respond.
@@ -69,14 +71,68 @@ They have 30 seconds to respond.
 
 **If declined:**
 - Request is denied
-- 75% chance the decliner punishes you with a reaction animation (slap, kick, etc.)
+- Decliner chooses which punishment animation to apply (or none)
 
 ### Step 5: Stop When Done
 
 Either player can stop:
 ```
-/stopanim
+/tlwstop
 ```
+
+---
+
+## Declining Requests
+
+When you receive a request you don't want to accept, you can decline it with control over the punishment:
+
+### Show Punishment Menu
+
+Simply type:
+```
+/tlwdecline
+```
+
+You'll see a menu like this:
+```
+========================================
+   Select Decline Punishment
+========================================
+0. Decline Without Punishment
+1. Bottle Hit
+2. Kick in Balls
+3. Punch Face
+4. Shove Away
+5. Slap in Face
+6. Spit on Face
+========================================
+```
+
+### Choose Your Response
+
+**Option 1: Decline without punishment**
+```
+/tlwdecline 0
+```
+Politely decline with no punishment animation.
+
+**Option 2: Apply a specific punishment**
+```
+/tlwdecline 1    # Bottle Hit
+/tlwdecline 2    # Kick in Balls
+/tlwdecline 3    # Punch Face
+/tlwdecline 4    # Shove Away
+/tlwdecline 5    # Slap in Face
+/tlwdecline 6    # Spit on Face
+```
+
+The punishment animation will play briefly (2-3 seconds) to show your displeasure!
+
+**Why this feature?**
+- **Player agency** - You control how you respond
+- **RP flexibility** - Choose appropriate IC reactions
+- **Funny moments** - Adds humor when deserved
+- **No punishment option** - For friends or gentle declines
 
 ---
 
@@ -164,28 +220,19 @@ Sweet and intimate:
 
 ---
 
-## What Happens When You Decline
-
-When you decline a request, there's a 75% chance you'll trigger a punishment animation:
-
-**Possible punishments:**
-- 👋 Slap in face
-- 🦵 Kick in balls
-- 👊 Punch face
-- 💨 Shove away
-- 🍾 Bottle hit
-- 💦 Spit on face
-
-**Why?** Adds humor and consequences for inappropriate requests!
-
-**To decline safely:**
-- You can't avoid punishment completely
-- It's part of the fun!
-- The animation is brief (2-3 seconds)
-
----
-
 ## Common Questions
+
+### Q: Can I decline without punishing someone?
+
+**A:** Yes! Use `/tlwdecline 0` to decline without any punishment animation.
+
+### Q: How do I choose which punishment to apply?
+
+**A:** Type `/tlwdecline` to see the menu, then type `/tlwdecline [number]` with the number of your chosen punishment.
+
+### Q: What if I want a random punishment like before?
+
+**A:** The server can still be configured for random punishments when you don't specify a punishment, if the Config.DeclineWithPunishment setting is enabled.
 
 ### Q: How close do I need to be?
 
@@ -205,7 +252,7 @@ When you decline a request, there's a 75% chance you'll trigger a punishment ani
 
 ### Q: What if we're already in an animation?
 
-**A:** You must use `/stopanim` first, then request a new one.
+**A:** You must use `/tlwstop` or `/stopanim` first, then request a new one.
 
 ### Q: Do I need to be in a specific position?
 
@@ -273,7 +320,7 @@ When you decline a request, there's a 75% chance you'll trigger a punishment ani
 
 Try:
 1. Check resource is loaded (F8 console)
-2. Make sure you typed `/anim` correctly
+2. Make sure you typed `/tlwanim` or `/tlw` correctly
 3. Ask admin to restart the resource
 
 ### Partner Not Receiving Request?
@@ -287,7 +334,7 @@ Try:
 
 - **Different props** - Try different bed/chair
 - **Ground level** - Move to flatter area
-- **Stop and retry** - `/stopanim` then try again
+- **Stop and retry** - `/tlwstop` or `/stopanim` then try again
 
 ---
 
@@ -297,12 +344,12 @@ Try:
 
 **Popular animations:**
 ```
-/playanim cowgirl         # Cowgirl (needs bed)
-/playanim missionary      # Missionary (needs bed)
-/playanim kiss            # Simple kiss
-/playanim lapdance        # Lap dance (needs chair)
-/playanim spank           # Spanking
-/playanim makeout         # Making out
+/tlwplay cowgirl         # Cowgirl (needs bed)
+/tlwplay missionary      # Missionary (needs bed)
+/tlwplay kiss            # Simple kiss
+/tlwplay lapdance        # Lap dance (needs chair)
+/tlwplay spank           # Spanking
+/tlwplay makeout         # Making out
 ```
 
 **Full list:** See [Animation List](ANIMATIONS.md)

@@ -34,12 +34,13 @@
 
 🎭 **40+ Adult Animations** - Extensive synchronized two-player animations  
 🤝 **Request/Accept System** - Interactive player invitations  
-💥 **Rejection Punishment** - Funny consequences for declined requests  
+💥 **Player-Controlled Punishment** - Choose which decline punishment to apply  
 🛏️ **Smart Prop Detection** - Auto-detect beds, chairs, and furniture  
 🎮 **Multi-Framework** - RSG-Core and LXR-Core support  
 ⚡ **Supreme Performance** - Optimized to ~0.01ms resmon  
 🌐 **Multilingual Ready** - Easy localization system  
-🔒 **Secure** - Built-in validation and anti-abuse
+🔒 **Secure** - Built-in validation and anti-abuse  
+🎯 **Custom Commands** - Separate commands to avoid conflicts with other scripts
 
 ---
 
@@ -66,11 +67,30 @@ ensure tlw_custom_animations
 ## 🎮 Basic Usage
 
 ```
-/anim                    # Open animation menu
-/playanim [key]         # Request animation
-/acceptanim             # Accept request
-/declineanim            # Decline (triggers punishment)
-/stopanim               # Stop animation
+/tlwanim or /tlw         # Open animation menu
+/tlwplay [key]           # Request animation
+/tlwaccept               # Accept request (or /acceptanim)
+/tlwdecline              # Show punishment menu and decline request
+/tlwdecline [number]     # Decline with specific punishment (0 = no punishment)
+/tlwstop                 # Stop animation (or /stopanim)
+```
+
+### Decline Punishment Selection
+
+When declining an animation request, you can choose which punishment to apply:
+
+```bash
+# Show menu of available punishments
+/tlwdecline
+
+# Decline without punishment
+/tlwdecline 0
+
+# Apply specific punishment (1-6)
+/tlwdecline 1    # Bottle Hit
+/tlwdecline 2    # Kick in Balls
+/tlwdecline 3    # Punch Face
+# ... and more
 ```
 
 ---
@@ -85,7 +105,7 @@ ensure tlw_custom_animations
 | Oral Positions | 2+ | ❌ |
 | Romantic | 6+ | ❌ |
 | Spanking | 3+ | ❌ |
-| Punishment (Auto) | 6+ | ❌ |
+| Decline Punishment (Player Choice) | 6+ | ❌ |
 
 ---
 

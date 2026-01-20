@@ -148,7 +148,7 @@ RegisterNetEvent('tlw_animations:acceptRequest', function(fromPlayerId, animatio
 end)
 
 -- Event: Target player declines the animation request
-RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId)
+RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId, selectedPunishment)
     local source = source
     
     -- Validate request exists
@@ -159,8 +159,22 @@ RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId)
     -- Clear pending request
     pendingRequests[source] = nil
     
-    -- Check if punishment should be applied
-    if Config.DeclineWithPunishment and math.random(100) <= Config.PunishmentChance then
+    -- Check if player selected a punishment
+    if selectedPunishment and Config.DeclineAnimations[selectedPunishment] then
+        -- Apply selected punishment
+        TriggerClientEvent('tlw_animations:startPunishment', source, selectedPunishment, fromPlayerId)
+        TriggerClientEvent('tlw_animations:receivePunishment', fromPlayerId, selectedPunishment, source)
+        
+        -- Notify both players
+        Notify({text = Locale("taught_lesson"), type = "success", source = source})
+        Notify({text = Locale("got_punished"), type = "error", source = fromPlayerId})
+        return
+    end
+    
+    -- Check if random punishment should be applied (legacy behavior)
+    local shouldApplyRandomPunishment = selectedPunishment == nil and Config.DeclineWithPunishment and math.random(100) <= Config.PunishmentChance
+    
+    if shouldApplyRandomPunishment then
         -- Select random punishment animation
         local punishments = {}
         for key, _ in pairs(Config.DeclineAnimations) do
@@ -177,16 +191,13 @@ RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId)
             -- Notify both players
             Notify({text = Locale("taught_lesson"), type = "success", source = source})
             Notify({text = Locale("got_punished"), type = "error", source = fromPlayerId})
-        else
-            -- No punishment, just notify
-            TriggerClientEvent('tlw_animations:requestDeclined', fromPlayerId)
-            Notify({text = Locale("request_declined"), type = "info", source = fromPlayerId})
+            return
         end
-    else
-        -- No punishment, just notify
-        TriggerClientEvent('tlw_animations:requestDeclined', fromPlayerId)
-        Notify({text = Locale("request_declined"), type = "info", source = fromPlayerId})
     end
+    
+    -- No punishment, just notify
+    TriggerClientEvent('tlw_animations:requestDeclined', fromPlayerId)
+    Notify({text = Locale("request_declined"), type = "info", source = fromPlayerId})
 end)
 
 -- Event: Player stops animation
