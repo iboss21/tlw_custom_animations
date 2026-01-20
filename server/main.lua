@@ -172,9 +172,7 @@ RegisterNetEvent('tlw_animations:declineRequest', function(fromPlayerId, selecte
     end
     
     -- Check if random punishment should be applied (legacy behavior)
-    local shouldApplyRandomPunishment = selectedPunishment == nil 
-        and Config.DeclineWithPunishment 
-        and math.random(100) <= Config.PunishmentChance
+    local shouldApplyRandomPunishment = selectedPunishment == nil and Config.DeclineWithPunishment and math.random(100) <= Config.PunishmentChance
     
     if shouldApplyRandomPunishment then
         -- Select random punishment animation

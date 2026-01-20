@@ -232,7 +232,7 @@ Sweet and intimate:
 
 ### Q: What if I want a random punishment like before?
 
-**A:** The server can still be configured for random punishments if the Config.DeclineWithPunishment setting is enabled and you don't specify a punishment.
+**A:** The server can still be configured for random punishments when you don't specify a punishment, if the Config.DeclineWithPunishment setting is enabled.
 
 ### Q: How close do I need to be?
 

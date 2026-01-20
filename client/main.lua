@@ -200,14 +200,17 @@ function ShowAnimationList(options, targetPlayer)
     end
 end
 
--- Helper function to get sorted punishment keys
+-- Helper function to get sorted punishment keys (cached for performance)
+local sortedPunishmentKeys = nil
 local function GetSortedPunishmentKeys()
-    local punishmentKeys = {}
-    for key, _ in pairs(Config.DeclineAnimations) do
-        table.insert(punishmentKeys, key)
+    if not sortedPunishmentKeys then
+        sortedPunishmentKeys = {}
+        for key, _ in pairs(Config.DeclineAnimations) do
+            table.insert(sortedPunishmentKeys, key)
+        end
+        table.sort(sortedPunishmentKeys)
     end
-    table.sort(punishmentKeys)
-    return punishmentKeys
+    return sortedPunishmentKeys
 end
 
 -- Function to show decline punishment selection menu
