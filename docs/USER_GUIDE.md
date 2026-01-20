@@ -1,0 +1,356 @@
+# 📖 User Guide
+
+## 🐺 THE LAND OF WOLVES - Custom Animations
+
+Complete guide for players on how to use the TLW Custom Animations system.
+
+---
+
+## What Is This?
+
+TLW Custom Animations is a player-to-player interactive animation system that allows you to request and perform synchronized animations with other players, including:
+
+- 🔥 Intimate positions
+- 💋 Romantic gestures
+- 💃 Dancing and teasing
+- 💥 Rejection responses (if declined)
+
+---
+
+## Basic Commands
+
+| Command | What It Does |
+|---------|--------------|
+| `/anim` | Opens animation menu |
+| `/playanim [key]` | Request specific animation |
+| `/acceptanim` | Accept a pending request |
+| `/declineanim` | Decline a request (may trigger punishment) |
+| `/stopanim` | Stop your current animation |
+
+---
+
+## How To Use
+
+### Step 1: Find a Partner
+
+- Get close to another player (within 3 meters)
+- Make sure they're ready and willing
+
+### Step 2: Request an Animation
+
+**Option A: Use the menu**
+```
+/anim
+```
+Browse available animations and select one.
+
+**Option B: Use direct command**
+```
+/playanim cowgirl
+```
+Replace "cowgirl" with any animation key.
+
+### Step 3: Wait for Response
+
+The other player will see a notification:
+
+```
+🐺 You received an animation request from [Name]
+Type /acceptanim to accept or /declineanim to decline
+```
+
+They have 30 seconds to respond.
+
+### Step 4: Animation Plays
+
+**If accepted:**
+- Both players automatically start the synchronized animation
+- Enjoy!
+
+**If declined:**
+- Request is denied
+- 75% chance the decliner punishes you with a reaction animation (slap, kick, etc.)
+
+### Step 5: Stop When Done
+
+Either player can stop:
+```
+/stopanim
+```
+
+---
+
+## Animation Categories
+
+### Standing Animations
+
+No special requirements, just stand close:
+
+- `standart` - Standing Doggy
+- `standing_behind` - Standing Behind
+- `wallsex` - Against Wall
+- And more...
+
+### Bed Animations
+
+Require a bed nearby:
+
+- `cowgirl` - Cowgirl Position
+- `missionary` - Missionary
+- `spooning` - Spooning
+- And more...
+
+**How to use:**
+1. Find a bed
+2. Stand right next to it
+3. Request the animation
+
+### Chair Animations
+
+Require a chair/bench/couch nearby:
+
+- `lapdance` - Lap Dance
+- `sitsex` - Sitting Sex
+- `couplesit` - Couple Sitting
+- And more...
+
+**How to use:**
+1. Find a chair
+2. Stand right next to it
+3. Request the animation
+
+### Romantic Animations
+
+Sweet and intimate:
+
+- `kiss` - Simple Kiss
+- `makeout` - Making Out
+- `hug_romantic` - Romantic Hug
+- And more...
+
+---
+
+## Tips & Tricks
+
+### Getting the Best Experience
+
+✅ **Stand on flat ground**
+- Avoid slopes and stairs
+- Level surfaces work best
+
+✅ **Face your partner**
+- Stand facing the direction you want
+- Animations will auto-adjust
+
+✅ **Be patient**
+- Give your partner time to respond
+- Don't spam requests
+
+✅ **Communicate**
+- Use voice chat or text
+- Coordinate before requesting
+
+### Finding Props
+
+**For bed animations:**
+- Hotels and homes
+- Camps and hideouts
+- Any building with beds
+
+**For chair animations:**
+- Saloons and bars
+- Homes and offices
+- Outdoor benches
+
+---
+
+## What Happens When You Decline
+
+When you decline a request, there's a 75% chance you'll trigger a punishment animation:
+
+**Possible punishments:**
+- 👋 Slap in face
+- 🦵 Kick in balls
+- 👊 Punch face
+- 💨 Shove away
+- 🍾 Bottle hit
+- 💦 Spit on face
+
+**Why?** Adds humor and consequences for inappropriate requests!
+
+**To decline safely:**
+- You can't avoid punishment completely
+- It's part of the fun!
+- The animation is brief (2-3 seconds)
+
+---
+
+## Common Questions
+
+### Q: How close do I need to be?
+
+**A:** Within 3 meters (about 10 feet) by default.
+
+### Q: Can I use animations alone?
+
+**A:** No, these are two-player animations only.
+
+### Q: What if no one accepts my request?
+
+**A:** The request expires after 30 seconds automatically.
+
+### Q: Can I request from multiple people?
+
+**A:** No, only one active request at a time.
+
+### Q: What if we're already in an animation?
+
+**A:** You must use `/stopanim` first, then request a new one.
+
+### Q: Do I need to be in a specific position?
+
+**A:** Just stand near your partner. The system auto-positions you.
+
+### Q: Why isn't the animation starting?
+
+**A:** Check:
+- You're close enough (3 meters)
+- Required prop is nearby (for bed/chair animations)
+- Both players accepted/aren't in another animation
+- No console errors (press F8)
+
+### Q: Can I create my own animations?
+
+**A:** Players can't, but server admins can add custom animations. See [Adding Animations Guide](ADDING_ANIMATIONS.md).
+
+### Q: Is this NSFW?
+
+**A:** Yes, this is an adult 18+ system. Use responsibly and in appropriate contexts.
+
+---
+
+## Etiquette & Guidelines
+
+### DO ✅
+
+- **Ask permission** before sending requests
+- **Respect "no"** - If someone declines, move on
+- **Use appropriately** - Consider RP context
+- **Be patient** - Give time to respond
+- **Communicate** - Talk to your partner
+
+### DON'T ❌
+
+- **Don't spam** requests
+- **Don't harass** players who decline
+- **Don't use** in inappropriate public areas (unless your server allows)
+- **Don't exploit** for griefing
+- **Don't demand** acceptance
+
+---
+
+## Roleplay Tips
+
+### For Serious RP
+
+- **Build up** to intimate animations through RP
+- **Use emotes** before and after animations
+- **Stay in character** during animations
+- **Respect boundaries** - Some characters may decline IC
+
+### For Casual Fun
+
+- **Have fun** with the system
+- **Try different** animations
+- **Laugh** at rejections (punishment animations)
+- **Experiment** with positions
+
+---
+
+## Troubleshooting for Players
+
+### Animation Menu Not Opening?
+
+Try:
+1. Check resource is loaded (F8 console)
+2. Make sure you typed `/anim` correctly
+3. Ask admin to restart the resource
+
+### Partner Not Receiving Request?
+
+- **Get closer** - Within 3 meters
+- **Check they're online** - Verify in player list
+- **Wait a moment** - Network may be slow
+- **Try again** - Resend the request
+
+### Animation Looks Weird?
+
+- **Different props** - Try different bed/chair
+- **Ground level** - Move to flatter area
+- **Stop and retry** - `/stopanim` then try again
+
+---
+
+## Advanced Usage
+
+### Animation Keys Quick Reference
+
+**Popular animations:**
+```
+/playanim cowgirl         # Cowgirl (needs bed)
+/playanim missionary      # Missionary (needs bed)
+/playanim kiss            # Simple kiss
+/playanim lapdance        # Lap dance (needs chair)
+/playanim spank           # Spanking
+/playanim makeout         # Making out
+```
+
+**Full list:** See [Animation List](ANIMATIONS.md)
+
+---
+
+## Safety & Consent
+
+### Important Reminders
+
+⚠️ **This is an adult system**
+- 18+ content
+- Use responsibly
+- Respect server rules
+
+⚠️ **Always get consent**
+- Ask before sending requests
+- Respect "no" answers
+- Don't pressure players
+
+⚠️ **Server rules apply**
+- Follow your server's guidelines
+- Some servers may restrict usage
+- Admins can stop animations
+
+---
+
+## Need Help?
+
+**For issues:**
+1. Check [Troubleshooting Guide](TROUBLESHOOTING.md)
+2. Ask in-game admins
+3. Check server Discord
+4. Visit www.wolves.land
+
+**For suggestions:**
+- Share feedback with admins
+- Suggest new animations
+- Report bugs
+
+---
+
+<div align="center">
+
+**🐺 THE LAND OF WOLVES 🐺**
+
+*Have fun and be respectful!*
+
+[www.wolves.land](https://www.wolves.land)
+
+</div>
