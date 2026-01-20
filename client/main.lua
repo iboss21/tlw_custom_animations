@@ -196,7 +196,7 @@ function ShowAnimationList(options, targetPlayer)
     -- For now, we'll create a command-based selection
     print("Available animations:")
     for i, option in ipairs(options) do
-        print(i .. ". " .. option.label .. " (/playanim " .. option.value .. ")")
+        print(i .. ". " .. option.label .. " (/" .. Config.Commands.playAnimation.name .. " " .. option.value .. ")")
     end
 end
 
