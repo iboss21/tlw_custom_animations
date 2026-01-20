@@ -1,9 +1,39 @@
+--[[
+    ████████╗██╗     ██╗    ██╗     █████╗ ███╗   ██╗██╗███╗   ███╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
+    ╚══██╔══╝██║     ██║    ██║    ██╔══██╗████╗  ██║██║████╗ ████║██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+       ██║   ██║     ██║ █╗ ██║    ███████║██╔██╗ ██║██║██╔████╔██║███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
+       ██║   ██║     ██║███╗██║    ██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
+       ██║   ███████╗╚███╔███╔╝    ██║  ██║██║ ╚████║██║██║ ╚═╝ ██║██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
+       ╚═╝   ╚══════╝ ╚══╝╚══╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+                                                                                                                     
+    🐺 The Land of Wolves - Custom Animations
+    Shared Utilities - Multi-Framework Support Functions
+    
+    Version: 1.0.0
+    Author: iBoss
+    Website: www.wolves.land
+    
+    This module provides shared utilities used by both client and server:
+    - Notify() - Universal notification system supporting multiple frameworks
+    - Locale() - Translation function with placeholder support
+    - Framework detection and compatibility layer
+    - Configurable notification durations and types
+    - Clean API for consistent behavior across frameworks
+    
+    Supported Frameworks:
+    - RSG-Core (ox_lib notifications)
+    - LXR-Core (redem_roleplay notifications)
+    - VORP (vorp notifications)
+    
+    © 2026 iBoss | The Land of Wolves | www.wolves.land
+]]
+
 -- Shared utility functions
 
 function Notify(data)
     local text = data.text or "No message" 
-    local time = data.time or 5000  
-    local type = data.type or "info" 
+    local time = data.time or Config.NotificationSettings.defaultDuration
+    local type = data.type or Config.NotificationSettings.defaultType
     local dict = data.dict
     local icon = data.icon
     local color = data.color or 0

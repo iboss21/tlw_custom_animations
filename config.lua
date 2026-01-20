@@ -1,17 +1,32 @@
 --[[
-    ╔════════════════════════════════════════════════════════════════════════════════╗
-    ║                                                                                ║
-    ║                        🐺 THE LAND OF WOLVES 🐺                               ║
-    ║                          Configuration File                                    ║
-    ║                                                                                ║
-    ║                          www.wolves.land                                       ║
-    ║                          Created by: iBoss                                     ║
-    ║                                                                                ║
-    ║  This file contains all configuration options for the custom animations       ║
-    ║  system including animation definitions, framework settings, and locale        ║
-    ║  configurations.                                                               ║
-    ║                                                                                ║
-    ╚════════════════════════════════════════════════════════════════════════════════╝
+    ████████╗██╗     ██╗    ██╗     █████╗ ███╗   ██╗██╗███╗   ███╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
+    ╚══██╔══╝██║     ██║    ██║    ██╔══██╗████╗  ██║██║████╗ ████║██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+       ██║   ██║     ██║ █╗ ██║    ███████║██╔██╗ ██║██║██╔████╔██║███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
+       ██║   ██║     ██║███╗██║    ██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
+       ██║   ███████╗╚███╔███╔╝    ██║  ██║██║ ╚████║██║██║ ╚═╝ ██║██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
+       ╚═╝   ╚══════╝ ╚══╝╚══╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+                                                                                                                     
+    🐺 The Land of Wolves - Advanced Custom Animations
+    "Intimate Encounters" - Player-to-Player Interactive Animation System
+    
+    Version: 1.0.0
+    Author: iBoss
+    Website: www.wolves.land
+    Server: The Land of Wolves
+    
+    A comprehensive player-to-player animation system featuring:
+    - 40+ adult 18+ synchronized animations (standing, bed, chair, romantic)
+    - Interactive request/accept/decline mechanics with 30-second timeout
+    - 6 punishment animations for rejected requests (slap, kick, punch, etc.)
+    - Smart prop detection (beds & 100+ chair models)
+    - Multi-framework support (RSG-Core, LXR-Core, VORP)
+    - Supreme performance optimization (~0.01ms resmon)
+    - Extensive configuration system - everything configurable from config.lua
+    - Beautiful localization support with emojis
+    - Comprehensive documentation with 7+ guides
+    
+    © 2026 iBoss | The Land of Wolves | www.wolves.land
+    License: All Rights Reserved
 ]]
 
 Config = {}
@@ -35,6 +50,69 @@ Config.RequestTimeout = 30000        -- Time in milliseconds before request expi
 Config.MaxDistance = 3.0              -- Maximum distance in meters to request animation from another player
 Config.DeclineWithPunishment = true   -- Enable punishment animations when someone declines
 Config.PunishmentChance = 75          -- Percentage chance (0-100) that declining will trigger punishment animation
+
+--[[
+    ┌──────────────────────────────────────────────────────────────────────────────┐
+    │                        PERFORMANCE SETTINGS                                    │
+    │  Optimization and cache settings for supreme performance                       │
+    └──────────────────────────────────────────────────────────────────────────────┘
+]]
+Config.PlayerPedUpdateInterval = 5000 -- How often to update cached player ped (milliseconds, default: 5000)
+Config.PropDetectionRadius = 2.0      -- Detection radius for beds/chairs (meters, default: 2.0)
+Config.EnableDebugMode = false        -- Enable debug prints (set to true for troubleshooting)
+
+--[[
+    ┌──────────────────────────────────────────────────────────────────────────────┐
+    │                           COMMAND SETTINGS                                     │
+    │  Customize all command names - change these to avoid conflicts                │
+    └──────────────────────────────────────────────────────────────────────────────┘
+]]
+Config.Commands = {
+    openMenu = {
+        name = "tlwanim",           -- Main command to open animation menu
+        aliases = {"tlw"},           -- Alternative shorter commands (table)
+        description = "Open TLW animation menu"
+    },
+    playAnimation = {
+        name = "tlwplay",            -- Command to play specific animation
+        aliases = {},                -- No aliases by default
+        description = "Request animation from nearby player"
+    },
+    acceptRequest = {
+        name = "tlwaccept",          -- Command to accept animation request
+        aliases = {"acceptanim"},    -- Alternative command
+        description = "Accept pending animation request"
+    },
+    declineRequest = {
+        name = "tlwdecline",         -- Command to decline animation request
+        aliases = {"declineanim"},   -- Alternative command
+        description = "Decline pending animation request"
+    },
+    stopAnimation = {
+        name = "tlwstop",            -- Command to stop current animation
+        aliases = {"stopanim"},      -- Alternative command
+        description = "Stop current animation"
+    },
+    -- Admin Commands
+    stopAllAnimations = {
+        name = "tlwstopallanims",    -- Admin command to stop all animations
+        permission = "tlw_animations.admin",
+        description = "Force stop all active animations (admin only)"
+    }
+}
+
+--[[
+    ┌──────────────────────────────────────────────────────────────────────────────┐
+    │                        NOTIFICATION SETTINGS                                   │
+    │  Customize notification behavior and appearance                                │
+    └──────────────────────────────────────────────────────────────────────────────┘
+]]
+Config.NotificationSettings = {
+    defaultDuration = 5000,          -- Default notification duration (milliseconds)
+    requestDuration = 8000,          -- Duration for animation requests (milliseconds)
+    useEmojis = true,                -- Use emojis in notifications (🐺, ✅, ❌, etc.)
+    defaultType = "info",            -- Default notification type
+}
 
 --[[
     ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -1614,7 +1692,7 @@ Config.Locale = {
     ["en"] = {
         -- Request/Response Messages
         ["request_sent"] = "🐺 Animation request sent to player",
-        ["request_received"] = "🐺 You received an animation request from ${name}. Type /acceptanim to accept or /declineanim to decline",
+        ["request_received"] = "🐺 You received an animation request from ${name}. Type /tlwaccept or /acceptanim to accept, /tlwdecline or /declineanim to decline",
         ["request_accepted"] = "✅ Animation request accepted!",
         ["request_declined"] = "❌ Animation request declined",
         ["request_expired"] = "⏰ Animation request expired",

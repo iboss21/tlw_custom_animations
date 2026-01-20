@@ -1,16 +1,30 @@
 --[[
-    ╔════════════════════════════════════════════════════════════════════════════════╗
-    ║                                                                                ║
-    ║                        🐺 THE LAND OF WOLVES 🐺                               ║
-    ║                          Client-Side Handler                                   ║
-    ║                                                                                ║
-    ║                          www.wolves.land                                       ║
-    ║                          Created by: iBoss                                     ║
-    ║                                                                                ║
-    ║  Handles all client-side animation logic, player interactions, and UI         ║
-    ║  Optimized for 0.01ms resmon performance with minimal resource usage          ║
-    ║                                                                                ║
-    ╚════════════════════════════════════════════════════════════════════════════════╝
+    ████████╗██╗     ██╗    ██╗     █████╗ ███╗   ██╗██╗███╗   ███╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
+    ╚══██╔══╝██║     ██║    ██║    ██╔══██╗████╗  ██║██║████╗ ████║██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+       ██║   ██║     ██║ █╗ ██║    ███████║██╔██╗ ██║██║██╔████╔██║███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
+       ██║   ██║     ██║███╗██║    ██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
+       ██║   ███████╗╚███╔███╔╝    ██║  ██║██║ ╚████║██║██║ ╚═╝ ██║██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
+       ╚═╝   ╚══════╝ ╚══╝╚══╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+                                                                                                                     
+    🐺 The Land of Wolves - Custom Animations
+    Client-Side Handler - Player Interaction & Animation Management
+    
+    Version: 1.0.0
+    Author: iBoss
+    Website: www.wolves.land
+    
+    This module handles all client-side functionality:
+    - Player ped caching with configurable intervals
+    - Animation dictionary loading and caching
+    - Prop detection (beds, chairs, furniture)
+    - Distance-based player detection
+    - Request/accept/decline interaction system
+    - Punishment animation playback
+    - Synchronized animation positioning
+    - Command registration from config
+    - Performance optimizations (~0.01ms resmon)
+    
+    © 2026 iBoss | The Land of Wolves | www.wolves.land
 ]]
 
 -- ============================================================================
@@ -24,15 +38,22 @@ local pendingRequest = nil
 local animationPartner = nil
 local propEntity = nil
 
--- Performance optimization: Only update ped cache when needed
+-- Performance optimization: Only update ped cache when needed (configurable interval)
 local pedUpdateTimer = 0
 local function UpdatePlayerPed()
     local currentTime = GetGameTimer()
-    if currentTime - pedUpdateTimer > 5000 then -- Update every 5 seconds
+    if currentTime - pedUpdateTimer > Config.PlayerPedUpdateInterval then
         playerPed = PlayerPedId()
         pedUpdateTimer = currentTime
     end
     return playerPed
+end
+
+-- Debug helper function
+local function DebugPrint(msg)
+    if Config.EnableDebugMode then
+        print("^3[TLW Debug]^7 " .. msg)
+    end
 end
 
 -- ============================================================================
@@ -111,7 +132,7 @@ local function GetPropHash(propName)
 end
 
 local function GetClosestProp(propList, maxDistance)
-    maxDistance = maxDistance or 2.0
+    maxDistance = maxDistance or Config.PropDetectionRadius
     UpdatePlayerPed()
     local playerCoords = GetEntityCoords(playerPed)
     local px, py, pz = playerCoords.x, playerCoords.y, playerCoords.z
@@ -135,6 +156,7 @@ local function GetClosestProp(propList, maxDistance)
         end
     end
     
+    DebugPrint("Prop detection: " .. (closestProp and "Found" or "Not found"))
     return closestProp
 end
 
@@ -309,15 +331,33 @@ function StopAnimation()
     end
 end
 
--- Command to open animation menu
-RegisterCommand('anim', function()
-    OpenAnimationMenu()
-end, false)
+-- ============================================================================
+--                     COMMAND REGISTRATION (CONFIG-BASED)
+-- ============================================================================
+-- All commands are registered dynamically from Config.Commands
 
--- Command to play animation (direct)
-RegisterCommand('playanim', function(source, args)
+-- Helper function to register command with aliases
+local function RegisterCommandWithAliases(cmdConfig, callback)
+    RegisterCommand(cmdConfig.name, callback, false)
+    
+    if cmdConfig.aliases then
+        for _, alias in ipairs(cmdConfig.aliases) do
+            RegisterCommand(alias, callback, false)
+        end
+    end
+    
+    DebugPrint("Registered command: /" .. cmdConfig.name)
+end
+
+-- Command: Open animation menu
+RegisterCommandWithAliases(Config.Commands.openMenu, function()
+    OpenAnimationMenu()
+end)
+
+-- Command: Play specific animation
+RegisterCommandWithAliases(Config.Commands.playAnimation, function(source, args)
     if #args < 1 then
-        print("Usage: /playanim [animation_key]")
+        print("Usage: /" .. Config.Commands.playAnimation.name .. " [animation_key]")
         return
     end
     
@@ -330,10 +370,10 @@ RegisterCommand('playanim', function(source, args)
     end
     
     RequestAnimation(closestPlayer, animKey)
-end, false)
+end)
 
--- Command to accept animation request
-RegisterCommand('acceptanim', function()
+-- Command: Accept animation request
+RegisterCommandWithAliases(Config.Commands.acceptRequest, function()
     if not pendingRequest then
         Notify({text = Locale("no_request"), type = "error"})
         return
@@ -341,10 +381,10 @@ RegisterCommand('acceptanim', function()
     
     TriggerServerEvent('tlw_animations:acceptRequest', pendingRequest.from, pendingRequest.animation)
     pendingRequest = nil
-end, false)
+end)
 
--- Command to decline animation request
-RegisterCommand('declineanim', function()
+-- Command: Decline animation request
+RegisterCommandWithAliases(Config.Commands.declineRequest, function()
     if not pendingRequest then
         Notify({text = Locale("no_request"), type = "error"})
         return
@@ -352,12 +392,12 @@ RegisterCommand('declineanim', function()
     
     TriggerServerEvent('tlw_animations:declineRequest', pendingRequest.from)
     pendingRequest = nil
-end, false)
+end)
 
--- Command to stop current animation
-RegisterCommand('stopanim', function()
+-- Command: Stop current animation
+RegisterCommandWithAliases(Config.Commands.stopAnimation, function()
     StopAnimation()
-end, false)
+end)
 
 -- ============================================================================
 --                     NETWORK EVENT HANDLERS (OPTIMIZED)

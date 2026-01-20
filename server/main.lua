@@ -1,4 +1,30 @@
--- Server-side animation management
+--[[
+    ████████╗██╗     ██╗    ██╗     █████╗ ███╗   ██╗██╗███╗   ███╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
+    ╚══██╔══╝██║     ██║    ██║    ██╔══██╗████╗  ██║██║████╗ ████║██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+       ██║   ██║     ██║ █╗ ██║    ███████║██╔██╗ ██║██║██╔████╔██║███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
+       ██║   ██║     ██║███╗██║    ██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
+       ██║   ███████╗╚███╔███╔╝    ██║  ██║██║ ╚████║██║██║ ╚═╝ ██║██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
+       ╚═╝   ╚══════╝ ╚══╝╚══╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+                                                                                                                     
+    🐺 The Land of Wolves - Custom Animations
+    Server-Side Coordinator - Request Management & Framework Integration
+    
+    Version: 1.0.0
+    Author: iBoss
+    Website: www.wolves.land
+    
+    This module handles all server-side coordination:
+    - Animation request routing between players
+    - Accept/decline logic with randomization
+    - Punishment animation selection and triggering
+    - Framework integration (RSG-Core, LXR-Core, VORP)
+    - Active animation state tracking
+    - Player disconnect cleanup
+    - Admin commands for server management
+    - Permission-based access control
+    
+    © 2026 iBoss | The Land of Wolves | www.wolves.land
+]]
 local activeAnimations = {}
 local pendingRequests = {}
 
@@ -210,17 +236,19 @@ AddEventHandler('playerDropped', function()
     end
 end)
 
--- Admin command to force stop all animations (optional)
-RegisterCommand('stopallanims', function(source, args)
+-- Admin command to force stop all animations (config-based)
+RegisterCommand(Config.Commands.stopAllAnimations.name, function(source, args)
     -- Add permission check here if needed
-    if source == 0 or IsPlayerAceAllowed(source, "tlw_animations.admin") then
+    if source == 0 or IsPlayerAceAllowed(source, Config.Commands.stopAllAnimations.permission) then
         local count = 0
         for playerId, _ in pairs(activeAnimations) do
             TriggerClientEvent('tlw_animations:partnerStopped', playerId)
             count = count + 1
         end
         activeAnimations = {}
-        print("Stopped " .. count .. " active animations")
+        print("^2[TLW Animations]^7 Stopped " .. count .. " active animations")
+    else
+        print("^3[TLW Animations]^7 Insufficient permissions for this command")
     end
 end, true)
 
