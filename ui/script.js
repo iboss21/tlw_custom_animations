@@ -135,7 +135,8 @@ document.addEventListener('keydown', function(event) {
 function GetParentResourceName() {
     let resourceName = 'tlw_custom_animations';
     
-    if (window.location.href.includes('://nui-img/')) {
+    // Check if we're in NUI context
+    if (window.location.href.includes('nui://')) {
         const match = window.location.href.match(/nui:\/\/([^\/]+)\//);
         if (match) resourceName = match[1];
     }

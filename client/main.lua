@@ -604,16 +604,18 @@ end)
 
 CreateThread(function()
     while true do
-        Wait(100)
-        
         if isInAnimation then
             UpdatePlayerPed()
             
-            -- Check if player is moving
-            if IsPedWalking(playerPed) or IsPedRunning(playerPed) or IsPedSprinting(playerPed) or 
-               IsPedJumping(playerPed) or IsPedClimbing(playerPed) or IsPedFalling(playerPed) then
+            -- Check if player is moving (optimized checks)
+            local isMoving = IsPedWalking(playerPed) or IsPedRunning(playerPed) or IsPedSprinting(playerPed)
+            
+            if isMoving or IsPedJumping(playerPed) or IsPedClimbing(playerPed) or IsPedFalling(playerPed) then
                 DebugPrint("Auto-cancel: Player is moving")
                 StopAnimation()
+                Wait(1000) -- Wait after stopping before checking again
+            else
+                Wait(200) -- Check less frequently to reduce overhead
             end
         else
             -- Sleep longer when not in animation to save performance
