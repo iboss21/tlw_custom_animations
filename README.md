@@ -33,11 +33,13 @@
 ## ✨ Features
 
 🎭 **40+ Adult Animations** - Extensive synchronized two-player animations  
+🎨 **Modern UI Menu** - Beautiful graphical interface with categories  
 🤝 **Request/Accept System** - Interactive player invitations  
 💥 **Player-Controlled Punishment** - Choose which decline punishment to apply  
 🛏️ **Smart Prop Detection** - Auto-detect beds, chairs, and furniture  
 🎮 **Multi-Framework** - RSG-Core and LXR-Core support  
 ⚡ **Supreme Performance** - Optimized to ~0.01ms resmon  
+🚫 **Auto-Cancel** - Animations stop when moving  
 🌐 **Multilingual Ready** - Easy localization system  
 🔒 **Secure** - Built-in validation and anti-abuse  
 🎯 **Custom Commands** - Separate commands to avoid conflicts with other scripts
@@ -66,14 +68,29 @@ ensure tlw_custom_animations
 
 ## 🎮 Basic Usage
 
+### UI Menu (Recommended)
 ```
-/tlwanim or /tlw         # Open animation menu
-/tlwplay [key]           # Request animation
+/tlwanim or /tlw         # Open graphical animation menu
+                         # - Browse animations by category
+                         # - Click any animation to request
+                         # - Visual indicators for bed/chair requirements
+                         # - Press ESC to close menu
+```
+
+### Commands (Alternative)
+```
+/tlwplay [key]           # Request animation by key name
 /tlwaccept               # Accept request (or /acceptanim)
 /tlwdecline              # Show punishment menu and decline request
 /tlwdecline [number]     # Decline with specific punishment (0 = no punishment)
 /tlwstop                 # Stop animation (or /stopanim)
 ```
+
+### Auto-Cancel Feature
+Animations will automatically stop when:
+- You start moving (walking, running, jumping)
+- Your partner stops their animation
+- You press ESC and stop the animation
 
 ### Decline Punishment Selection
 
