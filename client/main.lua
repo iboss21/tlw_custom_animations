@@ -173,31 +173,16 @@ function OpenAnimationMenu()
         return
     end
     
-    local menuOptions = {}
+    -- Send animation data to NUI
+    SendNUIMessage({
+        action = 'open',
+        animations = Config.Animations
+    })
     
-    for animKey, animData in pairs(Config.Animations) do
-        table.insert(menuOptions, {
-            label = animData.label,
-            value = animKey
-        })
-    end
+    -- Enable NUI focus
+    SetNuiFocus(true, true)
     
-    -- This is a simple implementation - you should integrate with your menu system
-    -- For RSG-Core, you might use ox_lib menu or rsg-menu
-    -- For LXR-Core, you might use their menu system
-    
-    -- Example with basic native input (replace with actual menu system)
-    ShowAnimationList(menuOptions, closestPlayer)
-end
-
--- Function to display animation list (simplified - integrate with your menu)
-function ShowAnimationList(options, targetPlayer)
-    -- This is a placeholder - replace with actual menu implementation
-    -- For now, we'll create a command-based selection
-    print("Available animations:")
-    for i, option in ipairs(options) do
-        print(i .. ". " .. option.label .. " (/" .. Config.Commands.playAnimation.name .. " " .. option.value .. ")")
-    end
+    DebugPrint("Animation menu opened")
 end
 
 -- Helper function to get sorted punishment keys (cached for performance)
@@ -285,15 +270,20 @@ function RequestAnimation(targetPlayerId, animationKey)
         end
     end
     
-    TriggerServerEvent('tlw_animations:requestAnimation', targetPlayerId, animationKey)
+    UpdatePlayerPed()
+    local coords = GetEntityCoords(playerPed)
+    local heading = GetEntityHeading(playerPed)
+    
+    TriggerServerEvent('tlw_animations:requestAnimation', targetPlayerId, animationKey, coords, heading)
     Notify({text = Locale("request_sent"), type = "success"})
 end
 
 -- Function to start synchronized animation
-function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
+function StartSyncAnimation(animationKey, isInitiator, partnerServerId, initiatorCoords, initiatorHeading)
     local animData = Config.Animations[animationKey]
     if not animData then return end
     
+    UpdatePlayerPed()
     isInAnimation = true
     currentAnimation = animationKey
     animationPartner = partnerServerId
@@ -318,7 +308,11 @@ function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
     end
     
     -- Load animation dictionary
-    LoadAnimDict(animInfo.dict)
+    if not LoadAnimDict(animInfo.dict) then
+        Notify({text = "Failed to load animation", type = "error"})
+        isInAnimation = false
+        return
+    end
     
     -- Calculate position and rotation
     local finalCoords, finalHeading
@@ -346,18 +340,17 @@ function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
             finalCoords = GetEntityCoords(playerPed)
             finalHeading = GetEntityHeading(playerPed)
         else
-            -- Get partner's position (this will be synced via server)
-            -- For now, use offset from current position
-            local playerCoords = GetEntityCoords(playerPed)
-            local playerHeading = GetEntityHeading(playerPed)
+            -- Use initiator's position if provided, otherwise fall back to current position
+            local baseCoords = initiatorCoords or GetEntityCoords(playerPed)
+            local baseHeading = initiatorHeading or GetEntityHeading(playerPed)
             
-            local radians = math.rad(playerHeading)
-            local finalX = playerCoords.x + (animInfo.posX * math.cos(radians) - animInfo.posY * math.sin(radians))
-            local finalY = playerCoords.y + (animInfo.posX * math.sin(radians) + animInfo.posY * math.cos(radians))
-            local finalZ = playerCoords.z + animInfo.posZ
+            local radians = math.rad(baseHeading)
+            local finalX = baseCoords.x + (animInfo.posX * math.cos(radians) - animInfo.posY * math.sin(radians))
+            local finalY = baseCoords.y + (animInfo.posX * math.sin(radians) + animInfo.posY * math.cos(radians))
+            local finalZ = baseCoords.z + animInfo.posZ
             
             finalCoords = vector3(finalX, finalY, finalZ)
-            finalHeading = playerHeading + animInfo.rotZ
+            finalHeading = baseHeading + animInfo.rotZ
         end
     end
     
@@ -365,9 +358,12 @@ function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
     SetEntityCoords(playerPed, finalCoords.x, finalCoords.y, finalCoords.z, false, false, false, false)
     SetEntityHeading(playerPed, finalHeading)
     
+    Wait(100) -- Small delay to ensure position is set
+    
     -- Play animation
     TaskPlayAnim(playerPed, animInfo.dict, animInfo.anim, 8.0, -8.0, -1, animInfo.flag, 0, false, false, false)
     
+    DebugPrint(string.format("Animation started: %s (isInitiator: %s)", animationKey, tostring(isInitiator)))
     Notify({text = Locale("animation_started"), type = "success"})
 end
 
@@ -484,6 +480,39 @@ RegisterCommandWithAliases(Config.Commands.stopAnimation, function()
 end)
 
 -- ============================================================================
+--                     NUI CALLBACKS (UI MENU SYSTEM)
+-- ============================================================================
+-- Handle NUI callbacks from the UI menu
+
+-- Callback: Close menu
+RegisterNUICallback('closeMenu', function(data, cb)
+    SetNuiFocus(false, false)
+    cb('ok')
+end)
+
+-- Callback: Request animation from UI
+RegisterNUICallback('requestAnimation', function(data, cb)
+    local animationKey = data.animationKey
+    local closestPlayer = GetClosestPlayer()
+    
+    if closestPlayer == -1 then
+        Notify({text = Locale("no_player_nearby"), type = "error"})
+        cb('ok')
+        return
+    end
+    
+    RequestAnimation(closestPlayer, animationKey)
+    cb('ok')
+end)
+
+-- Callback: Stop animation from UI
+RegisterNUICallback('stopAnimation', function(data, cb)
+    StopAnimation()
+    cb('ok')
+end)
+
+
+-- ============================================================================
 --                     NETWORK EVENT HANDLERS (OPTIMIZED)
 -- ============================================================================
 -- All network events optimized to minimize processing overhead
@@ -508,8 +537,8 @@ RegisterNetEvent('tlw_animations:receiveRequest', function(fromPlayer, animation
 end)
 
 -- Event to start animation (accepted)
-RegisterNetEvent('tlw_animations:startAnimation', function(animationKey, isInitiator, partnerServerId)
-    StartSyncAnimation(animationKey, isInitiator, partnerServerId)
+RegisterNetEvent('tlw_animations:startAnimation', function(animationKey, isInitiator, partnerServerId, initiatorCoords, initiatorHeading)
+    StartSyncAnimation(animationKey, isInitiator, partnerServerId, initiatorCoords, initiatorHeading)
 end)
 
 -- Event when request is declined
@@ -565,6 +594,33 @@ end)
 RegisterNetEvent('tlw_animations:partnerStopped', function()
     if isInAnimation then
         StopAnimation()
+    end
+end)
+
+-- ============================================================================
+--                     AUTO-CANCEL FEATURE (MOVEMENT DETECTION)
+-- ============================================================================
+-- Automatically cancel animation when player moves
+
+CreateThread(function()
+    while true do
+        if isInAnimation then
+            UpdatePlayerPed()
+            
+            -- Check if player is moving (optimized checks)
+            local isMoving = IsPedWalking(playerPed) or IsPedRunning(playerPed) or IsPedSprinting(playerPed)
+            
+            if isMoving or IsPedJumping(playerPed) or IsPedClimbing(playerPed) or IsPedFalling(playerPed) then
+                DebugPrint("Auto-cancel: Player is moving")
+                StopAnimation()
+                Wait(1000) -- Wait after stopping before checking again
+            else
+                Wait(200) -- Check less frequently to reduce overhead
+            end
+        else
+            -- Sleep longer when not in animation to save performance
+            Wait(1000)
+        end
     end
 end)
 

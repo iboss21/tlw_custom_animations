@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLW Animations</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="animation-menu" class="hidden">
+        <div class="menu-container">
+            <div class="menu-header">
+                <h1>🐺 TLW Animations</h1>
+                <button class="close-btn" onclick="closeMenu()">✕</button>
+            </div>
+            
+            <div class="menu-content">
+                <!-- Categories -->
+                <div class="categories">
+                    <button class="category-btn active" data-category="all">All</button>
+                    <button class="category-btn" data-category="standing">Standing</button>
+                    <button class="category-btn" data-category="bed">Bed</button>
+                    <button class="category-btn" data-category="chair">Chair</button>
+                    <button class="category-btn" data-category="romantic">Romantic</button>
+                    <button class="category-btn" data-category="other">Other</button>
+                </div>
+
+                <!-- Animation List -->
+                <div class="animations-list" id="animations-list">
+                    <!-- Animations will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="menu-footer">
+                <button class="action-btn stop-btn" onclick="stopAnimation()">Stop Animation</button>
+                <p class="help-text">Select an animation to request from nearby player</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

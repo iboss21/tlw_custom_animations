@@ -1,0 +1,210 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#animation-menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.menu-container {
+    width: 600px;
+    max-height: 80vh;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 2px solid #444;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.menu-header {
+    background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #8b6f47;
+}
+
+.menu-header h1 {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.close-btn {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 0, 0, 0.7);
+    border-color: #ff0000;
+    transform: rotate(90deg);
+}
+
+.menu-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.categories {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    padding: 10px 20px;
+    background: #3a3a3a;
+    border: 2px solid #555;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.category-btn:hover {
+    background: #4a4a4a;
+    border-color: #d4a574;
+    transform: translateY(-2px);
+}
+
+.category-btn.active {
+    background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);
+    border-color: #d4a574;
+}
+
+.animations-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.animation-item {
+    background: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.animation-item:hover {
+    background: #3a3a3a;
+    border-color: #d4a574;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+}
+
+.animation-item.needs-prop {
+    border-left: 4px solid #d4a574;
+}
+
+.animation-name {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.animation-category {
+    color: #999;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.animation-req {
+    color: #d4a574;
+    font-size: 11px;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.menu-footer {
+    background: #1a1a1a;
+    padding: 15px 20px;
+    border-top: 2px solid #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.action-btn {
+    padding: 12px 30px;
+    border: 2px solid #d4a574;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.stop-btn {
+    background: linear-gradient(135deg, #d4574e 0%, #8b3a3a 100%);
+    color: #fff;
+}
+
+.stop-btn:hover {
+    background: linear-gradient(135deg, #ff6b63 0%, #d4574e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 87, 78, 0.4);
+}
+
+.help-text {
+    color: #999;
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* Scrollbar Styling */
+.menu-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.menu-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 10px;
+}
+
+.menu-content::-webkit-scrollbar-thumb {
+    background: #d4a574;
+    border-radius: 10px;
+}
+
+.menu-content::-webkit-scrollbar-thumb:hover {
+    background: #8b6f47;
+}

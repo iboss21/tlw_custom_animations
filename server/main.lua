@@ -61,7 +61,7 @@ function IsPlayerInAnimation(source)
 end
 
 -- Event: Player requests animation from another player
-RegisterNetEvent('tlw_animations:requestAnimation', function(targetId, animationKey)
+RegisterNetEvent('tlw_animations:requestAnimation', function(targetId, animationKey, initiatorCoords, initiatorHeading)
     local source = source
     
     -- Validate animation exists
@@ -81,13 +81,15 @@ RegisterNetEvent('tlw_animations:requestAnimation', function(targetId, animation
         return
     end
     
-    -- Store pending request
+    -- Store pending request with initiator position
     local requestId = source .. "_" .. targetId .. "_" .. os.time()
     pendingRequests[targetId] = {
         from = source,
         animation = animationKey,
         requestId = requestId,
-        timestamp = os.time()
+        timestamp = os.time(),
+        coords = initiatorCoords,
+        heading = initiatorHeading
     }
     
     -- Send request to target player
@@ -111,6 +113,9 @@ RegisterNetEvent('tlw_animations:acceptRequest', function(fromPlayerId, animatio
         Notify({text = Locale("no_request"), type = "error", source = source})
         return
     end
+    
+    -- Get stored request data
+    local request = pendingRequests[source]
     
     -- Validate animation
     if not Config.Animations[animationKey] then
@@ -139,9 +144,9 @@ RegisterNetEvent('tlw_animations:acceptRequest', function(fromPlayerId, animatio
         isInitiator = false
     }
     
-    -- Notify both players to start animation
-    TriggerClientEvent('tlw_animations:startAnimation', fromPlayerId, animationKey, true, source)
-    TriggerClientEvent('tlw_animations:startAnimation', source, animationKey, false, fromPlayerId)
+    -- Notify both players to start animation with position sync
+    TriggerClientEvent('tlw_animations:startAnimation', fromPlayerId, animationKey, true, source, nil, nil)
+    TriggerClientEvent('tlw_animations:startAnimation', source, animationKey, false, fromPlayerId, request.coords, request.heading)
     
     -- Send acceptance notification to initiator
     Notify({text = Locale("request_accepted"), type = "success", source = fromPlayerId})
