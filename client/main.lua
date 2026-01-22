@@ -270,15 +270,20 @@ function RequestAnimation(targetPlayerId, animationKey)
         end
     end
     
-    TriggerServerEvent('tlw_animations:requestAnimation', targetPlayerId, animationKey)
+    UpdatePlayerPed()
+    local coords = GetEntityCoords(playerPed)
+    local heading = GetEntityHeading(playerPed)
+    
+    TriggerServerEvent('tlw_animations:requestAnimation', targetPlayerId, animationKey, coords, heading)
     Notify({text = Locale("request_sent"), type = "success"})
 end
 
 -- Function to start synchronized animation
-function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
+function StartSyncAnimation(animationKey, isInitiator, partnerServerId, initiatorCoords, initiatorHeading)
     local animData = Config.Animations[animationKey]
     if not animData then return end
     
+    UpdatePlayerPed()
     isInAnimation = true
     currentAnimation = animationKey
     animationPartner = partnerServerId
@@ -303,7 +308,11 @@ function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
     end
     
     -- Load animation dictionary
-    LoadAnimDict(animInfo.dict)
+    if not LoadAnimDict(animInfo.dict) then
+        Notify({text = "Failed to load animation", type = "error"})
+        isInAnimation = false
+        return
+    end
     
     -- Calculate position and rotation
     local finalCoords, finalHeading
@@ -331,18 +340,17 @@ function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
             finalCoords = GetEntityCoords(playerPed)
             finalHeading = GetEntityHeading(playerPed)
         else
-            -- Get partner's position (this will be synced via server)
-            -- For now, use offset from current position
-            local playerCoords = GetEntityCoords(playerPed)
-            local playerHeading = GetEntityHeading(playerPed)
+            -- Use initiator's position if provided, otherwise fall back to current position
+            local baseCoords = initiatorCoords or GetEntityCoords(playerPed)
+            local baseHeading = initiatorHeading or GetEntityHeading(playerPed)
             
-            local radians = math.rad(playerHeading)
-            local finalX = playerCoords.x + (animInfo.posX * math.cos(radians) - animInfo.posY * math.sin(radians))
-            local finalY = playerCoords.y + (animInfo.posX * math.sin(radians) + animInfo.posY * math.cos(radians))
-            local finalZ = playerCoords.z + animInfo.posZ
+            local radians = math.rad(baseHeading)
+            local finalX = baseCoords.x + (animInfo.posX * math.cos(radians) - animInfo.posY * math.sin(radians))
+            local finalY = baseCoords.y + (animInfo.posX * math.sin(radians) + animInfo.posY * math.cos(radians))
+            local finalZ = baseCoords.z + animInfo.posZ
             
             finalCoords = vector3(finalX, finalY, finalZ)
-            finalHeading = playerHeading + animInfo.rotZ
+            finalHeading = baseHeading + animInfo.rotZ
         end
     end
     
@@ -350,9 +358,12 @@ function StartSyncAnimation(animationKey, isInitiator, partnerServerId)
     SetEntityCoords(playerPed, finalCoords.x, finalCoords.y, finalCoords.z, false, false, false, false)
     SetEntityHeading(playerPed, finalHeading)
     
+    Wait(100) -- Small delay to ensure position is set
+    
     -- Play animation
     TaskPlayAnim(playerPed, animInfo.dict, animInfo.anim, 8.0, -8.0, -1, animInfo.flag, 0, false, false, false)
     
+    DebugPrint(string.format("Animation started: %s (isInitiator: %s)", animationKey, tostring(isInitiator)))
     Notify({text = Locale("animation_started"), type = "success"})
 end
 
@@ -526,8 +537,8 @@ RegisterNetEvent('tlw_animations:receiveRequest', function(fromPlayer, animation
 end)
 
 -- Event to start animation (accepted)
-RegisterNetEvent('tlw_animations:startAnimation', function(animationKey, isInitiator, partnerServerId)
-    StartSyncAnimation(animationKey, isInitiator, partnerServerId)
+RegisterNetEvent('tlw_animations:startAnimation', function(animationKey, isInitiator, partnerServerId, initiatorCoords, initiatorHeading)
+    StartSyncAnimation(animationKey, isInitiator, partnerServerId, initiatorCoords, initiatorHeading)
 end)
 
 -- Event when request is declined

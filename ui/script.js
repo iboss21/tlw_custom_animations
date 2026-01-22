@@ -64,8 +64,20 @@ function populateAnimations() {
     list.innerHTML = '';
     
     for (const [key, anim] of Object.entries(animations)) {
+        // Auto-determine category based on animation properties
+        let animCategory = 'standing';
+        if (anim.nededBeds) {
+            animCategory = 'bed';
+        } else if (anim.nededChair) {
+            animCategory = 'chair';
+        } else if (anim.category) {
+            animCategory = anim.category;
+        } else if (anim.label && (anim.label.toLowerCase().includes('romantic') || anim.label.toLowerCase().includes('kiss'))) {
+            animCategory = 'romantic';
+        }
+        
         // Filter by category
-        if (currentCategory !== 'all' && anim.category !== currentCategory) {
+        if (currentCategory !== 'all' && animCategory !== currentCategory) {
             continue;
         }
         
@@ -87,7 +99,7 @@ function populateAnimations() {
         
         item.innerHTML = `
             <div class="animation-name">${anim.label}</div>
-            <div class="animation-category">${anim.category || 'general'}</div>
+            <div class="animation-category">${animCategory}</div>
             ${reqText ? `<div class="animation-req">${reqText}</div>` : ''}
         `;
         
