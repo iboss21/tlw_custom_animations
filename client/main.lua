@@ -173,31 +173,16 @@ function OpenAnimationMenu()
         return
     end
     
-    local menuOptions = {}
+    -- Send animation data to NUI
+    SendNUIMessage({
+        action = 'open',
+        animations = Config.Animations
+    })
     
-    for animKey, animData in pairs(Config.Animations) do
-        table.insert(menuOptions, {
-            label = animData.label,
-            value = animKey
-        })
-    end
+    -- Enable NUI focus
+    SetNuiFocus(true, true)
     
-    -- This is a simple implementation - you should integrate with your menu system
-    -- For RSG-Core, you might use ox_lib menu or rsg-menu
-    -- For LXR-Core, you might use their menu system
-    
-    -- Example with basic native input (replace with actual menu system)
-    ShowAnimationList(menuOptions, closestPlayer)
-end
-
--- Function to display animation list (simplified - integrate with your menu)
-function ShowAnimationList(options, targetPlayer)
-    -- This is a placeholder - replace with actual menu implementation
-    -- For now, we'll create a command-based selection
-    print("Available animations:")
-    for i, option in ipairs(options) do
-        print(i .. ". " .. option.label .. " (/" .. Config.Commands.playAnimation.name .. " " .. option.value .. ")")
-    end
+    DebugPrint("Animation menu opened")
 end
 
 -- Helper function to get sorted punishment keys (cached for performance)
@@ -484,6 +469,39 @@ RegisterCommandWithAliases(Config.Commands.stopAnimation, function()
 end)
 
 -- ============================================================================
+--                     NUI CALLBACKS (UI MENU SYSTEM)
+-- ============================================================================
+-- Handle NUI callbacks from the UI menu
+
+-- Callback: Close menu
+RegisterNUICallback('closeMenu', function(data, cb)
+    SetNuiFocus(false, false)
+    cb('ok')
+end)
+
+-- Callback: Request animation from UI
+RegisterNUICallback('requestAnimation', function(data, cb)
+    local animationKey = data.animationKey
+    local closestPlayer = GetClosestPlayer()
+    
+    if closestPlayer == -1 then
+        Notify({text = Locale("no_player_nearby"), type = "error"})
+        cb('ok')
+        return
+    end
+    
+    RequestAnimation(closestPlayer, animationKey)
+    cb('ok')
+end)
+
+-- Callback: Stop animation from UI
+RegisterNUICallback('stopAnimation', function(data, cb)
+    StopAnimation()
+    cb('ok')
+end)
+
+
+-- ============================================================================
 --                     NETWORK EVENT HANDLERS (OPTIMIZED)
 -- ============================================================================
 -- All network events optimized to minimize processing overhead
@@ -565,6 +583,31 @@ end)
 RegisterNetEvent('tlw_animations:partnerStopped', function()
     if isInAnimation then
         StopAnimation()
+    end
+end)
+
+-- ============================================================================
+--                     AUTO-CANCEL FEATURE (MOVEMENT DETECTION)
+-- ============================================================================
+-- Automatically cancel animation when player moves
+
+CreateThread(function()
+    while true do
+        Wait(100)
+        
+        if isInAnimation then
+            UpdatePlayerPed()
+            
+            -- Check if player is moving
+            if IsPedWalking(playerPed) or IsPedRunning(playerPed) or IsPedSprinting(playerPed) or 
+               IsPedJumping(playerPed) or IsPedClimbing(playerPed) or IsPedFalling(playerPed) then
+                DebugPrint("Auto-cancel: Player is moving")
+                StopAnimation()
+            end
+        else
+            -- Sleep longer when not in animation to save performance
+            Wait(1000)
+        end
     end
 end)
 
